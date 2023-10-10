@@ -1,4 +1,3 @@
-import { User } from 'src/user/entities/user.entity';
 import {DataSourceOptions, DataSource} from 'typeorm';
 
 export const dataSourceOption:DataSourceOptions = {
@@ -6,7 +5,7 @@ export const dataSourceOption:DataSourceOptions = {
     host: 'localhost',
     port: 3306,
     username: 'root',
-    password: 'Longtran1509',
+    password: 'password',
     database: 'blog-nestjs',
     entities: ['dist/**/*.entity{.js,.ts}'],
     migrations: ['dist/db/migrations/*{.ts,.js}'],
