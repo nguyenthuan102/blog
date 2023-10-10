@@ -4,9 +4,9 @@ import {DataSourceOptions, DataSource} from 'typeorm';
 export const dataSourceOption:DataSourceOptions = {
     type: 'mysql',
     host: 'localhost',
-    port: 33061,
+    port: 3306,
     username: 'root',
-    password: 'root',
+    password: 'Longtran1509',
     database: 'blog-nestjs',
     entities: ['dist/**/*.entity{.js,.ts}'],
     migrations: ['dist/db/migrations/*{.ts,.js}'],
