@@ -5,13 +5,15 @@ import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { JwtService } from '@nestjs/jwt'
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User) private userRepository:Repository<User>,
-        private jwtService:JwtService
+        private jwtService:JwtService,
+        private configService:ConfigService
     ){}
 
     async register(registerUserDTO:RegisterUserDTO):Promise<User> {
@@ -38,6 +40,22 @@ export class AuthService {
          return this.generateToken(payload);
     }
 
+    async refreshToken(refreshToken:string):Promise<any> {
+        try {
+            const verify = await this.jwtService.verifyAsync(refreshToken,{
+                secret:this.configService.get<string>('SECRET')
+            });
+            const checkExistToken = await this.userRepository.findOneBy({email:verify.email.refreshToken});
+            if(checkExistToken){
+                return this.generateToken({id:verify.id,email:verify.email})
+            } else {
+                throw new HttpException('Refresh token is not valid',HttpStatus.BAD_REQUEST);
+            }
+        } catch (error) {
+            throw new HttpException('Refresh token is not valid',HttpStatus.BAD_REQUEST);
+        }
+    }
+
     private async hashPassWord(password: string):Promise<string> {
         const saltRound = 10;
         const salt = await bcrypt.genSalt(saltRound);
@@ -48,8 +66,8 @@ export class AuthService {
     private async generateToken(payload: {id:number,email:string}) {
         const accessToken = await this.jwtService.signAsync(payload);
         const refreshToken = await this.jwtService.signAsync(payload,{
-            secret:'123456',
-            expiresIn:'1h'
+            secret:this.configService.get<string>('SECRET'),
+            expiresIn:this.configService.get<string>('EXP_IN_REFRESH_TOKEN')
         });
         await this.userRepository.update(
             {email: payload.email},

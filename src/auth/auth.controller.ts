@@ -19,4 +19,9 @@ export class AuthController {
     login(@Body() loginUserDTO:LoginUserDTO):Promise<any> {
         return this.authService.login(loginUserDTO);
     }
+
+    @Post('refresh-token')
+    refreshToken(@Body() {refreshToken}):Promise<any> {
+        return this.authService.refreshToken(refreshToken);
+    }
 }
