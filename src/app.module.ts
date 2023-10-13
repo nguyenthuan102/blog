@@ -6,13 +6,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOption } from 'db/data-source';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { PostModule } from './post/post.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOption),
     UserModule, 
     AuthModule,
-    ConfigModule.forRoot()
+    ConfigModule.forRoot(),
+    PostModule,
+    CategoryModule
   ],
   controllers: [AppController],
   providers: [AppService],
